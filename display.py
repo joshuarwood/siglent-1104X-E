@@ -33,6 +33,7 @@ def display(path, save=False):
     plt.xlabel("time [%.2e s]" % pwr)
     plt.ylabel("voltage [V]")
     plt.title(os.path.basename(path))
+    plt.grid()
     if save:
         png = path.replace(".txt",".png")
         print("Saving " + png)
