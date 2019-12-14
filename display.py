@@ -4,16 +4,16 @@ r"""
 @author Josh Wood
 @date   Dec 13, 2019
 @brief  Displays waveform files created with logger.py
-        usage: ./display.py <waveform.txt>
+        usage: ./display.py -i <waveform.txt> [-s]
 """
 
 import io
 import os
-import sys
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-def display(path, png=None):
+def display(path, save=False):
 
     f = open(path)
 
@@ -33,7 +33,9 @@ def display(path, png=None):
     plt.xlabel("time [%.2e s]" % pwr)
     plt.ylabel("voltage [V]")
     plt.title(os.path.basename(path))
-    if png:
+    if save:
+        png = path.replace(".txt",".png")
+        print("Saving " + png)
         plt.savefig(png)
     else:
         plt.show()
@@ -41,6 +43,14 @@ def display(path, png=None):
 
 # END display()
 
-if __name__ == "__main__":
-    display(sys.argv[1])
+p = argparse.ArgumentParser(
+    prog="Waveform Display",
+    description="Waveform display for SIGLENT SDS 1104X-E scope")
+p.add_argument("-i", '--input', required=True, help="Input file")
+p.add_argument("-s", "--save", action="store_true", help="Save a png image")
 
+if __name__ == "__main__":
+    args = p.parse_args()
+    if args.input[-4:] != ".txt":
+        raise ValueError("Input file must end with .txt")
+    display(args.input, args.save)

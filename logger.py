@@ -57,7 +57,6 @@ for i in range(args.num):
     print("\n%s Acquiring ..." % ts)
     try:
         inst.write("ARM")
-
         for chan in args.channels:
 
             trigger = os.path.join(args.output, "waveform_%s_%s.txt" % (chan, ts))
@@ -73,7 +72,7 @@ for i in range(args.num):
             inst.write(chan + ":WF? DAT2")
 
             raw = []
-            while len(raw) < int(22 + sanu):
+            while len(raw) < int(22 + sanu + 2):
                 raw.extend(list(inst.read_raw()))
             waveform = list(raw)[22:22 + sanu]
 
