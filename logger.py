@@ -44,7 +44,6 @@ rm = pyvisa.ResourceManager()
 inst = rm.open_resource(rm.list_resources()[0])
 inst.write_termination = '\n'
 inst.read_termination = '\n'
-inst.query_delay = 1
 inst.timeout = 30000
 
 # check connection
@@ -60,6 +59,11 @@ for i in range(args.num):
     print('\n%s Acquiring ...' % ts)
     try:
         inst.write('ARM')
+
+        # loop to ensure trigger is received
+        while 'Stop' not in inst.query('SAST?'):
+            pass
+
         for chan in args.channels:
 
             trigger = os.path.join(args.output, 'waveform_%s_%s.txt' % (chan, ts))
