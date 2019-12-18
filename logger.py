@@ -55,6 +55,7 @@ for i in range(args.num):
     # get timestamp
     t0 = time.time()
     ts = datetime.fromtimestamp(t0).strftime('%Y-%m-%dT%H.%M.%S')
+    ts += ("%.4f" % (datetime.fromtimestamp(t0).microsecond / 1e6))[1:]
 
     print('\n%s Acquiring ...' % ts)
     try:
