@@ -13,6 +13,14 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
+def rescale(a):
+    i = int(np.log10(a.max()))
+    if i < 0:
+        i -= 1
+    pwr = 10**i
+
+    return  a / pwr, pwr
+
 def display(path, save=False):
 
     f = open(path)
@@ -25,19 +33,21 @@ def display(path, save=False):
     waveform[waveform > 127] -= 255 
 
     v = waveform * (vdiv / 25) - offset
-    t = - tdiv * 14 / 2 + np.arange(v.size) / sara
-    pwr = 10**int(np.log10(t.max()))
-    t /= pwr
+    v, vpwr = rescale(v)
 
+    t = - tdiv * 14 / 2 + np.arange(v.size) / sara
+    t, tpwr = rescale(t)
+
+    fig = plt.figure(figsize=[7,4])
     plt.plot(t, v)
-    plt.xlabel("time [%.2e s]" % pwr)
-    plt.ylabel("voltage [V]")
+    plt.xlabel("time [%.2e s]" % tpwr)
+    plt.ylabel("voltage [%.2e V]" % vpwr)
     plt.title(os.path.basename(path))
     plt.grid()
     if save:
         png = path.replace(".txt",".png")
         print("Saving " + png)
-        plt.savefig(png)
+        plt.savefig(png, dpi=200)
     else:
         plt.show()
     plt.clf()
